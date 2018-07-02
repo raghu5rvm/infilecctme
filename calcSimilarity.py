@@ -113,7 +113,9 @@ def calcDuplicates(data):
 					cate1 += str(cat)
 					
 					
-				#specs analysis
+				"""**********************************************************************
+				Analyze specs and try to find product properties
+				**********************************************************************"""
 				if(len(keySpecsStr1)>1):
 						
 					fabric1 = keySpecsStr1[1]
@@ -175,6 +177,9 @@ def calcDuplicates(data):
 						topType1 = topType1[len(topType1)-1]
 					else:
 						topType1 = "unknown"
+				"""**********************************************************************
+				End of specs analysis
+				**********************************************************************"""
 								
 					
 				
@@ -221,7 +226,9 @@ def calcDuplicates(data):
 							detailedSpecsStr2 =  detailedSpecsStr2.split(";")
 							sellerName2 = product2[15]	
 							
-							#specs analysis
+							"""*******************************************************
+							specs analysis
+							******************************************************"""
 							if(len(keySpecsStr2)>1):
 									
 								fabric2 = keySpecsStr2[1]
@@ -285,16 +292,22 @@ def calcDuplicates(data):
 									topType2 = "unknown"							
 
 
+							"""*******************************************************
+							end of specs analysis for product2
+							******************************************************"""
 							cate2 = ""
 							for cat in categories2:
 								cate2 += str(cat)
 							
-							#create product1 string
+							#create product2 string
 							p2str = title2+" "+mrp2+" "+str(sellingPrice2)+" "+str(specialPrice2)+" "+productUrl2+" "+cate2+" "+productBrand2+" "+str(discount2)+" "+str(shippingCharges2)+" "+sleeve2+" "+neck2+" "+fabric2+" "+printPattern2+" "+str(size2)+" "+topType2
+							
+							#create product2 vector
 							p2StrV = avg_feature_vector(p2str, model=model, num_features=300, index2word_set=index2word_set) 
 							
 							print ("\np1-string-"+p1str+"\np2-string-"+p2str)
 							
+							#calculate similarity
 							sim = 1 - spatial.distance.cosine(p1StrV, p2StrV)
 							sim = sim *1000 / 1000
 							sim = "%.8f" % sim
@@ -316,7 +329,11 @@ def calcDuplicates(data):
 
 
 
+"""***********************************************************************************************************
 
+		function to read data and find similar items based on product family column 
+
+***********************************************************************************************************"""
 
 
 with open('dataCleanedLarge.csv', 'rb') as f:	
@@ -366,8 +383,14 @@ with open('dataCleanedLarge.csv', 'rb') as f:
 	calcDuplicates(data)
 	
 
+	
+"""**************************************************************************************************************
+dump output data into json file
+************************************************************************************************************"""
+
 with open('output.json', 'w') as fp:
     json.dump(opDataJson, fp,sort_keys=True, indent=5)
     
+
 print ("\n\ntesting done")		
 
